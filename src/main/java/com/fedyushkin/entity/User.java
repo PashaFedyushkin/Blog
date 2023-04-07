@@ -15,7 +15,8 @@ import lombok.*;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
+    @SequenceGenerator(name = "users_seq", sequenceName = "users_seq", allocationSize = 1)
     private Long id;
 
     @NotNull
@@ -31,4 +32,11 @@ public class User {
 
     @NotNull
     private String surname;
+
+    public User(String login, String password, String name, String surname){
+        this.login = login;
+        this.password = password;
+        this.name = name;
+        this.surname = surname;
+    }
 }

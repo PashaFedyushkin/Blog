@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceJpa implements UserService {
 
-    private final UserRepository repository;
+    @Autowired
+    private UserRepository repository;
 
     @Override
     public long addUser(User user){
