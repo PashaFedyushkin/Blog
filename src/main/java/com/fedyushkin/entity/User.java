@@ -1,18 +1,22 @@
 package com.fedyushkin.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.validator.constraints.UniqueElements;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
+@Table(name = "users")
 @Setter
 @Getter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
 public class User {
 
     @Id
@@ -20,24 +24,24 @@ public class User {
     @SequenceGenerator(name = "users_seq", sequenceName = "users_seq", allocationSize = 1)
     private Long id;
 
-    @NotNull
-    @Size(max = 30, message = "Login should not be more than 30 characters.")
-    private String login;
+    private String username;
+
+    @Email
+    private String email;
 
     @NotNull
-    @Size(min = 6, max = 20, message = "Password should be between 6 and 20 characters.")
     private String password;
 
-    @NotNull
-    private String name;
 
-    @NotNull
-    private String surname;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(	name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
-    public User(String login, String password, String name, String surname){
-        this.login = login;
+    public User(String username, String email, String password){
+        this.username = username;
+        this.email = email;
         this.password = password;
-        this.name = name;
-        this.surname = surname;
     }
 }

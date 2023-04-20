@@ -1,36 +1,35 @@
 package com.fedyushkin.controller;
 
-import com.fedyushkin.entity.User;
-import com.fedyushkin.service.UserService;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.fedyushkin.payload.request.LoginRequest;
+import com.fedyushkin.payload.request.SignupRequest;
+import com.fedyushkin.service.AuthService;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Objects;
 
+
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/auth")
+@RequiredArgsConstructor
+@RequestMapping("/api/auth")
 public class AuthController {
 
-    private UserService service;
+    private final AuthService authService;
 
-    public AuthController(UserService service) {
-        this.service = service;
+    @PostMapping("/signin")
+    public ResponseEntity authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+        return authService.authenticateUser(loginRequest);
     }
 
-    @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody User getAuthUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null) {
-            return null;
-        }
-        Object principal = auth.getPrincipal();
-        User user = (principal instanceof User) ? (User) principal : null;
-        return Objects.nonNull(user) ? this.service.getByLogin(user.getLogin()) : null;
+    @PostMapping("/signup")
+    public ResponseEntity registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+        return authService.registerUser(signUpRequest);
     }
-
 }

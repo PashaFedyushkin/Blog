@@ -6,13 +6,21 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
     show-sql: true
     defer-datasource-initialization: true
 
+
+fedyushkin:
+  app:
+    jwtSecret: fedyushkinSecretKey
+    jwtExpirationMs: 86400000
+
 logging:
   level:
-    org.hibernate.sql: debug
+    org.hibernate:
+      SQL: debug
+      orm.jdbc.bind: trace

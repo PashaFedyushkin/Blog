@@ -15,10 +15,11 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceJpa implements UserService, UserDetailsService {
 
-    @Autowired
-    private UserRepository repository;
+
+    private final UserRepository repository;
 
     @Override
     public long addUser(User user){
@@ -36,16 +37,16 @@ public class UserServiceJpa implements UserService, UserDetailsService {
     }
 
     @Override
-    public User getByLogin(String login){
-        return repository.findByLogin(login);
+    public User getByUsername(String username){
+        return repository.findByUsername(username).get();
     }
 
     @Override
-    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        User u = getByLogin(login);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User u = getByUsername(username);
         if (Objects.isNull(u)) {
-            throw new UsernameNotFoundException(String.format("User %s is not found", login));
+            throw new UsernameNotFoundException(String.format("User %s is not found", username));
         }
-        return new org.springframework.security.core.userdetails.User(u.getLogin(), u.getPassword(), true, true, true, true, new HashSet<>());
+        return new org.springframework.security.core.userdetails.User(u.getUsername(), u.getPassword(), true, true, true, true, new HashSet<>());
     }
 }
